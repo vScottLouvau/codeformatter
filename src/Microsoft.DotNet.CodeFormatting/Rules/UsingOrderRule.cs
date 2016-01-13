@@ -34,6 +34,7 @@ namespace Microsoft.DotNet.CodeFormatting.Rules
             // Update whitespace to add a line between each top level namespace
             var whitespaceCorrectedUsings = SyntaxFactory.List<UsingDirectiveSyntax>();
 
+            // TODO: Want to keep leading trivia unless it contains the copyright comment. Seems overly complex.
             string lastRootNamespace = String.Empty;
             foreach(UsingDirectiveSyntax u in sortedUsings)
             {
@@ -41,11 +42,13 @@ namespace Microsoft.DotNet.CodeFormatting.Rules
 
                 if(rootNamespace != lastRootNamespace && !String.IsNullOrEmpty(lastRootNamespace))
                 {
-                    whitespaceCorrectedUsings = whitespaceCorrectedUsings.Add(WithLeadingNewlineCount(u, 1));
+                    //whitespaceCorrectedUsings = whitespaceCorrectedUsings.Add(WithLeadingNewlineCount(u, 1));
+                    whitespaceCorrectedUsings = whitespaceCorrectedUsings.Add(u.WithLeadingTrivia(SyntaxFactory.CarriageReturnLineFeed));
                 }
                 else
                 {
-                    whitespaceCorrectedUsings = whitespaceCorrectedUsings.Add(WithLeadingNewlineCount(u, 0));
+                    //whitespaceCorrectedUsings = whitespaceCorrectedUsings.Add(WithLeadingNewlineCount(u, 0));
+                    whitespaceCorrectedUsings = whitespaceCorrectedUsings.Add(u.WithoutLeadingTrivia());
                 }
 
                 lastRootNamespace = rootNamespace;
